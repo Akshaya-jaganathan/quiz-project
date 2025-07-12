@@ -3,17 +3,44 @@
 <head>
   <title>Quiz Result</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .correct {
+      color: green;
+    }
+    .wrong {
+      color: red;
+    }
+  </style>
 </head>
 <body>
   <h2>Your Quiz Result</h2>
   <p id="score">Loading score...</p>
-
+  <div id="review"></div>
   <button onclick="window.location.href='index.html'">Back to Home</button>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const score = urlParams.get('score');
-    document.getElementById('score').innerText = "Your Score: " + score;
-  </script>
-</body>
+  const score = localStorage.getItem("score") || 0;
+  localStorage.removeItem("score");
+
+  const review = JSON.parse(localStorage.getItem("review")) || [];
+  localStorage.removeItem("review");
+
+  document.getElementById("score").innerText = "Your Score: " + score;
+
+  const reviewDiv = document.getElementById("review");
+  review.forEach((item, index) => {
+    const isCorrect = item.selected === item.correct;
+    const q = document.createElement("div");
+    q.innerHTML = `
+      <p><b>Q${index + 1}:</b> ${item.question}</p>
+      <p class="${isCorrect ? 'correct' : 'wrong'}">
+        Your Answer: ${item.selected}
+      </p>
+      <p>Correct Answer: ${item.correct}</p>
+      <hr>
+    `;
+    reviewDiv.appendChild(q);
+  });
+</script>
+    </body>
 </html>

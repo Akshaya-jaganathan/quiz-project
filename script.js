@@ -2,6 +2,7 @@ let currentQuestion = 0;
 let score = 0;
 let timer;
 let timeLeft = 30;
+let userAnswers = [];
 
 const questions = [
   {
@@ -70,6 +71,11 @@ function loadQuestion() {
     const btn = document.createElement("button");
     btn.innerText = option;
     btn.onclick = () => {
+      userAnswers.push({
+        question: q.question,
+        selected: option,
+        correct: q.answer
+      });
       if (option === q.answer) score++;
       nextQuestion();
     };
@@ -81,6 +87,11 @@ function loadQuestion() {
     timeLeft--;
     document.getElementById("timer").innerText = `⏱ Time left: ${timeLeft}s`;
     if (timeLeft === 0) {
+      userAnswers.push({
+        question: q.question,
+        selected: "No Answer",
+        correct: q.answer
+      });
       clearInterval(timer);
       nextQuestion();
     }
@@ -93,6 +104,7 @@ function nextQuestion() {
     loadQuestion();
   } else {
     localStorage.setItem("score", score);
+    localStorage.setItem("review", JSON.stringify(userAnswers));
     window.location.href = "result.html";
   }
 }
